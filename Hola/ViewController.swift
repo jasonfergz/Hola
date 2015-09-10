@@ -16,17 +16,24 @@ class ViewController: UIViewController, FBSDKLoginButtonDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+		
+		//Setup Facebook button
+		setupFacebook()
+		//If have valid facebook session token just login to MMX
+		if (FBSDKAccessToken.currentAccessToken() != nil) {
+			fetchUserFacebookDataAndLogin()
+		}
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
 		
-		setupFacebook()
         // 8. Receive the message
         // Indicate that you are ready to receive messages now!
         MMX.enableIncomingMessages()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "didReceiveMessage:", name: MMXDidReceiveMessageNotification, object: nil)
+		
     }
 	
     func didReceiveMessage(notification: NSNotification) {
@@ -101,7 +108,9 @@ class ViewController: UIViewController, FBSDKLoginButtonDelegate {
 		// Do any additional setup after loading the view, typically from a nib.
 		var loginButton = FBSDKLoginButton()
 		loginButton.delegate = self
-		loginButton.frame = CGRectMake(100, 100, 150, 40)
+		let buttonWidth = 150.0
+		let buttonXPos: Float = Float(self.view.frame.size.width)/2.0 - Float(buttonWidth/2.0)
+		loginButton.frame = CGRectMake(CGFloat(buttonXPos), CGFloat(buttonWidth), 150, 40)
 		loginButton.readPermissions = ["email","user_friends","user_birthday"]
 		self.view.addSubview(loginButton)
 		
@@ -109,7 +118,10 @@ class ViewController: UIViewController, FBSDKLoginButtonDelegate {
 
 	func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
 		println("\n\nloginButton didCompleteWithResult token \(result.token.tokenString) \n userID  \(result.token.userID) \ngrantedPermissions = \(result.grantedPermissions) \nerror \(error)")
-		
+		fetchUserFacebookDataAndLogin()
+	}
+	
+	func fetchUserFacebookDataAndLogin() {
 		if (FBSDKAccessToken.currentAccessToken() != nil) {
 			let graphRequest : FBSDKGraphRequest = FBSDKGraphRequest(graphPath:  "me", parameters: ["fields":"id,name,email,birthday"])
 			graphRequest.startWithCompletionHandler({ (connection: FBSDKGraphRequestConnection!, requestResult: AnyObject!, requestError: NSError!) -> Void in
