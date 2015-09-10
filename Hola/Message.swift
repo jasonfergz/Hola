@@ -64,8 +64,9 @@ class Message : NSObject, JSQMessageData, Printable {
     
     func messageHash() -> UInt {
         // FIXME:
-        let contentHash = isMediaMessage() ? Int(media().mediaHash()) : text().hash
-        return UInt(senderId().hash ^ date().hash ^ contentHash)
+//        let contentHash = isMediaMessage() ? Int(media().mediaHash()) : text().hash
+//        return UInt(senderId().hash ^ date().hash ^ contentHash)
+        return UInt(abs(underlyingMessage.messageID.hash))
     }
     
     func text() -> String! {
