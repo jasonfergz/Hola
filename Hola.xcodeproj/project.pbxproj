@@ -13,7 +13,6 @@
 		215219B91B9F696500F5B3A3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 215219B81B9F696500F5B3A3 /* Images.xcassets */; };
 		215219BC1B9F696500F5B3A3 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 215219BA1B9F696500F5B3A3 /* LaunchScreen.xib */; };
 		215219C81B9F696500F5B3A3 /* HolaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 215219C71B9F696500F5B3A3 /* HolaTests.swift */; };
-		215219D41B9F69F300F5B3A3 /* Foo.m in Sources */ = {isa = PBXBuildFile; fileRef = 215219D31B9F69F300F5B3A3 /* Foo.m */; };
 		215219D61B9F816B00F5B3A3 /* Configurations.plist in Resources */ = {isa = PBXBuildFile; fileRef = 215219D51B9F816B00F5B3A3 /* Configurations.plist */; };
 		215219D81B9FB63C00F5B3A3 /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 215219D71B9FB63C00F5B3A3 /* MessagesViewController.swift */; };
 		21547F661BA0A89E00C353E9 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21547F651BA0A89E00C353E9 /* Message.swift */; };
@@ -44,8 +43,6 @@
 		215219C61B9F696500F5B3A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		215219C71B9F696500F5B3A3 /* HolaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HolaTests.swift; sourceTree = "<group>"; };
 		215219D11B9F69F200F5B3A3 /* Hola-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Hola-Bridging-Header.h"; sourceTree = "<group>"; };
-		215219D21B9F69F300F5B3A3 /* Foo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Foo.h; sourceTree = "<group>"; };
-		215219D31B9F69F300F5B3A3 /* Foo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Foo.m; sourceTree = "<group>"; };
 		215219D51B9F816B00F5B3A3 /* Configurations.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Configurations.plist; sourceTree = "<group>"; };
 		215219D71B9FB63C00F5B3A3 /* MessagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesViewController.swift; sourceTree = "<group>"; };
 		21547F651BA0A89E00C353E9 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
@@ -110,8 +107,6 @@
 				215219B81B9F696500F5B3A3 /* Images.xcassets */,
 				215219BA1B9F696500F5B3A3 /* LaunchScreen.xib */,
 				215219AF1B9F696500F5B3A3 /* Supporting Files */,
-				215219D21B9F69F300F5B3A3 /* Foo.h */,
-				215219D31B9F69F300F5B3A3 /* Foo.m */,
 				215219D11B9F69F200F5B3A3 /* Hola-Bridging-Header.h */,
 				215219D71B9FB63C00F5B3A3 /* MessagesViewController.swift */,
 				21547F651BA0A89E00C353E9 /* Message.swift */,
@@ -307,7 +302,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				215219D41B9F69F300F5B3A3 /* Foo.m in Sources */,
 				215219B41B9F696500F5B3A3 /* ViewController.swift in Sources */,
 				21547F661BA0A89E00C353E9 /* Message.swift in Sources */,
 				21547F681BA2010800C353E9 /* MessageType.swift in Sources */,

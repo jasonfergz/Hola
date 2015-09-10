@@ -59,7 +59,6 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
          *  2. Add new id<JSQMessageData> object to your data source
          *  3. Call `finishReceivingMessage`
          */
-        JSQSystemSoundPlayer.jsq_playMessageReceivedSound()
         let tmp : [NSObject : AnyObject] = notification.userInfo!
         let mmxMessage = tmp[MMXMessageKey] as! MMXMessage
         
@@ -129,9 +128,6 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
         default:
             println("default")
         }
-        
-        JSQSystemSoundPlayer.jsq_playMessageSentSound()
-        finishSendingMessageAnimated(true)
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
@@ -161,9 +157,12 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
             let avatarURL = NSURL(string: "https://graph.facebook.com/v2.2/10153012454715971/picture?type=large")
             let avatarDownloadTask = NSURLSession.sharedSession().downloadTaskWithURL(avatarURL!, completionHandler: { (location, _, error) -> Void in
                 dispatch_async(dispatch_get_main_queue()) {
-                    let avatarImage = UIImage(data: NSData(contentsOfURL: location)!)
-                    self.avatars[message.senderId()] = avatarImage
-                    collectionView.reloadItemsAtIndexPaths([indexPath])
+                    let avatarData = NSData(contentsOfURL: location)
+                    if let _ = avatarData {
+                        let avatarImage = UIImage(data: avatarData!)
+                        self.avatars[message.senderId()] = avatarImage
+                        collectionView.reloadItemsAtIndexPaths([indexPath])
+                    }
                 }
             })
             
@@ -319,6 +318,7 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
         mmxMessage.sendWithSuccess( { () -> Void in
             let message = Message(message: mmxMessage)
             self.messages.append(message)
+            self.finishSendingMessageAnimated(true)
             }) { (error) -> Void in
                 println(error)
         }

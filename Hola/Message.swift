@@ -26,7 +26,7 @@ class Message : NSObject, JSQMessageData, Printable {
         case .Text:
             return nil
         case .Location:
-            let location = CLLocation(latitude: 37.795313, longitude: -122.393757)
+            let location = CLLocation(latitude: (messageContent["latitude"] as! NSString).doubleValue, longitude: (messageContent["longitude"] as! NSString).doubleValue)
             let locationMediaItem = JSQLocationMediaItem()
             locationMediaItem.setLocation(location, withCompletionHandler: self.completion)
             return locationMediaItem
@@ -64,8 +64,9 @@ class Message : NSObject, JSQMessageData, Printable {
     
     func messageHash() -> UInt {
         // FIXME:
-        let contentHash = isMediaMessage() ? Int(media().mediaHash()) : text().hash
-        return UInt(senderId().hash ^ date().hash ^ contentHash)
+//        let contentHash = isMediaMessage() ? Int(media().mediaHash()) : text().hash
+//        return UInt(senderId().hash ^ date().hash ^ contentHash)
+        return UInt(abs(underlyingMessage.messageID.hash))
     }
     
     func text() -> String! {
