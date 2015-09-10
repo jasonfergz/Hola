@@ -23,7 +23,7 @@ class Message : NSObject, JSQMessageData {
     }
     
     func senderDisplayName() -> String! {
-        return underlyingMessage.sender.displayName
+        return (underlyingMessage.sender.displayName != nil) ? underlyingMessage.sender.displayName : underlyingMessage.sender.username
     }
     
     func date() -> NSDate! {

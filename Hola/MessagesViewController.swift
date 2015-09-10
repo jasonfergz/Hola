@@ -24,10 +24,22 @@ class MessagesViewController : JSQMessagesViewController {
         
         showLoadEarlierMessagesHeader = true
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage.jsq_defaultTypingIndicatorImage(), style: .Bordered, target: self, action: "receiveMessagePressed:")
+//        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage.jsq_defaultTypingIndicatorImage(), style: .Bordered, target: self, action: "receiveMessagePressed:")
     }
     
-    func receiveMessagePressed(notification: NSNotification) {
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "didReceiveMessage:", name: MMXDidReceiveMessageNotification, object: nil)
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    func didReceiveMessage(notification: NSNotification) {
 
         /**
          *  Show the typing indicator to be shown
@@ -38,6 +50,20 @@ class MessagesViewController : JSQMessagesViewController {
          *  Scroll to actually view the indicator
          */
         scrollToBottomAnimated(true)
+        
+        /**
+         *  Upon receiving a message, you should:
+         *
+         *  1. Play sound (optional)
+         *  2. Add new id<JSQMessageData> object to your data source
+         *  3. Call `finishReceivingMessage`
+         */
+        JSQSystemSoundPlayer.jsq_playMessageReceivedSound()
+        let tmp : [NSObject : AnyObject] = notification.userInfo!
+        let mmxMessage = tmp[MMXMessageKey] as! MMXMessage
+        let message = Message(message: mmxMessage)
+        messages.append(message)
+        finishReceivingMessageAnimated(true)
     }
     
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
@@ -51,7 +77,7 @@ class MessagesViewController : JSQMessagesViewController {
          */
         JSQSystemSoundPlayer.jsq_playMessageSentSound()
         
-        let mmxMessage = MMXMessage(toRecipients: Set([MMXUser.currentUser()]), messageContent: ["message": "Hello"])
+        let mmxMessage = MMXMessage(toRecipients: Set([currentRecipient()]), messageContent: ["message": text])
         mmxMessage.sendWithSuccess( { () -> Void in
             let message = Message(message: mmxMessage)
             self.messages.append(message)
@@ -105,13 +131,13 @@ class MessagesViewController : JSQMessagesViewController {
          *  iOS7-style sender name labels
          */
         if message.senderId() == senderId {
-            return nil;
+            return nil
         }
         
         if indexPath.item - 1 > 0 {
             let previousMessage = messages[indexPath.item - 1]
             if previousMessage.senderId()  == message.senderId() {
-                return nil;
+                return nil
             }
         }
         
@@ -132,8 +158,7 @@ class MessagesViewController : JSQMessagesViewController {
     }
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        println(super.collectionView.cellForItemAtIndexPath(indexPath))
-        let cell = super.collectionView.cellForItemAtIndexPath(indexPath) as! JSQMessagesCollectionViewCell
+        let cell = super.collectionView(collectionView, cellForItemAtIndexPath: indexPath) as! JSQMessagesCollectionViewCell
         let message = messages[indexPath.item]
         
         if !message.isMediaMessage() {
@@ -145,9 +170,77 @@ class MessagesViewController : JSQMessagesViewController {
             
             // FIXME: 1
             cell.textView.linkTextAttributes = [ NSForegroundColorAttributeName : cell.textView.textColor,
-                NSUnderlineStyleAttributeName : 1 ];
+                NSUnderlineStyleAttributeName : 1 ]
         }
         
         return cell
+    }
+    
+    // MARK: JSQMessagesCollectionViewDelegateFlowLayout methods
+    
+    override func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForCellTopLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
+        /**
+         *  Each label in a cell has a `height` delegate method that corresponds to its text dataSource method
+         */
+        
+        /**
+         *  This logic should be consistent with what you return from `attributedTextForCellTopLabelAtIndexPath:`
+         *  The other label height delegate methods should follow similarly
+         *
+         *  Show a timestamp for every 3rd message
+         */
+        if indexPath.item % 3 == 0 {
+            return kJSQMessagesCollectionViewCellLabelHeightDefault
+        }
+        
+        return 0.0
+    }
+    
+    override func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
+        /**
+         *  iOS7-style sender name labels
+         */
+        let currentMessage = messages[indexPath.item]
+        if currentMessage.senderId() == senderId {
+            return 0.0
+        }
+        
+        if indexPath.item - 1 > 0 {
+            let previousMessage = messages[indexPath.item - 1]
+            if previousMessage.senderId() == currentMessage.senderId() {
+                return 0.0
+            }
+        }
+        
+        return kJSQMessagesCollectionViewCellLabelHeightDefault
+    }
+    
+    override func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForCellBottomLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
+        return 0.0
+    }
+    
+    override func collectionView(collectionView: JSQMessagesCollectionView!, header headerView: JSQMessagesLoadEarlierHeaderView!, didTapLoadEarlierMessagesButton sender: UIButton!) {
+        println("Load earlier messages!")
+    }
+    
+    override func collectionView(collectionView: JSQMessagesCollectionView!, didTapAvatarImageView avatarImageView: UIImageView!, atIndexPath indexPath: NSIndexPath!) {
+        println("Tapped avatar!")
+    }
+    
+    override func collectionView(collectionView: JSQMessagesCollectionView!, didTapMessageBubbleAtIndexPath indexPath: NSIndexPath!) {
+        println("Tapped message bubble!")
+    }
+    
+    override func collectionView(collectionView: JSQMessagesCollectionView!, didTapCellAtIndexPath indexPath: NSIndexPath!, touchLocation: CGPoint) {
+        println("Tapped cell at \(touchLocation)")
+    }
+    
+    // MARK: Helper methods
+    
+    func currentRecipient() -> MMXUser {
+        let currentRecipient = MMXUser()
+        currentRecipient.username = "echo_bot"
+        
+        return currentRecipient
     }
 }
