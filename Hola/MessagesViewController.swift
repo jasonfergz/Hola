@@ -67,11 +67,13 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
          *  Allow typing indicator to show
          */
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(1.0 * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), {
-            
+            let message = Message(message: mmxMessage) {
+                self.collectionView.reloadData()
+            }
+            self.messages.append(message)
+            JSQSystemSoundPlayer.jsq_playMessageReceivedSound()
+            self.finishReceivingMessageAnimated(true)
         })
-        let message = Message(message: mmxMessage)
-        messages.append(message)
-        finishReceivingMessageAnimated(true)
     }
     
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
@@ -127,24 +129,6 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
         default:
             println("default")
         }
-        
-//        switch buttonIndex {
-//        case 0:
-////            [self.demoData addPhotoMediaMessage];
-//            
-//        case 1:
-//                __weak UICollectionView *weakView = self.collectionView;
-//                
-//                [self.demoData addLocationMediaMessageCompletion:^{
-//                    [weakView reloadData];
-//                    }];
-//            }
-//            break;
-//            
-//        case 2:
-//            [self.demoData addVideoMediaMessage];
-//            break;
-//        }
         
         JSQSystemSoundPlayer.jsq_playMessageSentSound()
         finishSendingMessageAnimated(true)
@@ -323,11 +307,7 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
     
     func addLocationMediaMessageCompletion(completion: JSQLocationMediaItemCompletionBlock) {
         let ferryBuildingInSF = CLLocation(latitude: 37.795313, longitude: -122.393757)
-//        let locationItem = JSQLocationMediaItem()
-//        locationItem.setLocation(ferryBuildingInSF, withCompletionHandler: completion)
-//        let locationMessage = JSQMessage(senderId: MMXUser.currentUser().username, displayName: MMXUser.currentUser().displayName, media: locationItem)
-//        messages.append(locationMessage)
-        
+
         JSQSystemSoundPlayer.jsq_playMessageSentSound()
         
         let messageContent = [
@@ -339,7 +319,6 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
         mmxMessage.sendWithSuccess( { () -> Void in
             let message = Message(message: mmxMessage)
             self.messages.append(message)
-            self.finishSendingMessageAnimated(true)
             }) { (error) -> Void in
                 println(error)
         }

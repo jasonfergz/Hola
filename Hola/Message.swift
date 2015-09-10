@@ -10,9 +10,10 @@ import Foundation
 import JSQMessagesViewController
 import MMX
 
-class Message : NSObject, JSQMessageData {
+class Message : NSObject, JSQMessageData, Printable {
     
     let underlyingMessage: MMXMessage
+    let completion: JSQLocationMediaItemCompletionBlock
     
     lazy var type: MessageType = {
         return MessageType(rawValue: self.underlyingMessage.messageContent["type"] as! String)
@@ -25,8 +26,10 @@ class Message : NSObject, JSQMessageData {
         case .Text:
             return nil
         case .Location:
-            println("here")
-            return JSQLocationMediaItem(location: CLLocation(latitude: 37.795313, longitude: -122.393757))
+            let location = CLLocation(latitude: 37.795313, longitude: -122.393757)
+            let locationMediaItem = JSQLocationMediaItem()
+            locationMediaItem.setLocation(location, withCompletionHandler: self.completion)
+            return locationMediaItem
         case .Photo:
             return nil
         case .Video:
@@ -34,8 +37,9 @@ class Message : NSObject, JSQMessageData {
         }
     }()
     
-    init(message: MMXMessage) {
+    init(message: MMXMessage, completion: JSQLocationMediaItemCompletionBlock = {}) {
         self.underlyingMessage = message
+        self.completion = completion
     }
     
     func senderId() -> String! {
@@ -70,6 +74,10 @@ class Message : NSObject, JSQMessageData {
     
     func media() -> JSQMessageMediaData! {
         return mediaContent
+    }
+    
+    override var description: String {
+        return "senderId is \(senderId()), messageContent is \(underlyingMessage.messageContent)"
     }
     
 }
