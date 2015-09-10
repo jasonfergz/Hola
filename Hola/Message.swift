@@ -14,6 +14,26 @@ class Message : NSObject, JSQMessageData {
     
     let underlyingMessage: MMXMessage
     
+    lazy var type: MessageType = {
+        return MessageType(rawValue: self.underlyingMessage.messageContent["type"] as! String)
+    }()!
+    
+    lazy var mediaContent: JSQMessageMediaData! = {
+        let messageContent = self.underlyingMessage.messageContent
+        
+        switch self.type {
+        case .Text:
+            return nil
+        case .Location:
+            println("here")
+            return JSQLocationMediaItem(location: CLLocation(latitude: 37.795313, longitude: -122.393757))
+        case .Photo:
+            return nil
+        case .Video:
+            return nil
+        }
+    }()
+    
     init(message: MMXMessage) {
         self.underlyingMessage = message
     }
@@ -35,13 +55,13 @@ class Message : NSObject, JSQMessageData {
     }
     
     func isMediaMessage() -> Bool {
-        return false
+        return (type != MessageType.Text)
     }
     
     func messageHash() -> UInt {
         // FIXME:
-        let contentHash = isMediaMessage() ? media().hash : text().hash;
-        return UInt(senderId().hash ^ date().hash ^ contentHash);
+        let contentHash = isMediaMessage() ? Int(media().mediaHash()) : text().hash
+        return UInt(senderId().hash ^ date().hash ^ contentHash)
     }
     
     func text() -> String! {
@@ -49,9 +69,7 @@ class Message : NSObject, JSQMessageData {
     }
     
     func media() -> JSQMessageMediaData! {
-        return nil
+        return mediaContent
     }
-    
-//    optional func media() -> JSQMessageMediaData!
     
 }

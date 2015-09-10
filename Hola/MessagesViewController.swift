@@ -12,7 +12,7 @@ import MMX
 
 class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate {
     
-    var messages = [Message]()
+    var messages = [JSQMessageData]()
     var avatars = Dictionary<String, UIImage>()
     var outgoingBubbleImageView = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleLightGrayColor())
     var incomingBubbleImageView = JSQMessagesBubbleImageFactory().incomingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleBlueColor())
@@ -62,6 +62,13 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
         JSQSystemSoundPlayer.jsq_playMessageReceivedSound()
         let tmp : [NSObject : AnyObject] = notification.userInfo!
         let mmxMessage = tmp[MMXMessageKey] as! MMXMessage
+        
+        /**
+         *  Allow typing indicator to show
+         */
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(1.0 * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), {
+            
+        })
         let message = Message(message: mmxMessage)
         messages.append(message)
         finishReceivingMessageAnimated(true)
@@ -78,7 +85,11 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
          */
         JSQSystemSoundPlayer.jsq_playMessageSentSound()
         
-        let mmxMessage = MMXMessage(toRecipients: Set([currentRecipient()]), messageContent: ["message": text])
+        let messageContent = [
+            "type": MessageType.Text.rawValue,
+            "message": text,
+        ]
+        let mmxMessage = MMXMessage(toRecipients: Set([currentRecipient()]), messageContent: messageContent)
         mmxMessage.sendWithSuccess( { () -> Void in
             let message = Message(message: mmxMessage)
             self.messages.append(message)
@@ -107,8 +118,9 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
             // addPhotoMediaMessage
             println("addPhotoMediaMessage")
         case 2:
-            // addLocationMediaMessageCompletion
-            println("addLocationMediaMessageCompletion")
+            addLocationMediaMessageCompletion {
+                self.collectionView.reloadData()
+            }
         case 3:
             // addVideoMediaMessage
             println("addVideoMediaMessage")
@@ -307,5 +319,29 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
         currentRecipient.username = "echo_bot"
         
         return currentRecipient
+    }
+    
+    func addLocationMediaMessageCompletion(completion: JSQLocationMediaItemCompletionBlock) {
+        let ferryBuildingInSF = CLLocation(latitude: 37.795313, longitude: -122.393757)
+//        let locationItem = JSQLocationMediaItem()
+//        locationItem.setLocation(ferryBuildingInSF, withCompletionHandler: completion)
+//        let locationMessage = JSQMessage(senderId: MMXUser.currentUser().username, displayName: MMXUser.currentUser().displayName, media: locationItem)
+//        messages.append(locationMessage)
+        
+        JSQSystemSoundPlayer.jsq_playMessageSentSound()
+        
+        let messageContent = [
+            "type": MessageType.Location.rawValue,
+            "latitude": "\(ferryBuildingInSF.coordinate.latitude)",
+            "longitude": "\(ferryBuildingInSF.coordinate.longitude)"
+        ]
+        let mmxMessage = MMXMessage(toRecipients: Set([currentRecipient()]), messageContent: messageContent)
+        mmxMessage.sendWithSuccess( { () -> Void in
+            let message = Message(message: mmxMessage)
+            self.messages.append(message)
+            self.finishSendingMessageAnimated(true)
+            }) { (error) -> Void in
+                println(error)
+        }
     }
 }
