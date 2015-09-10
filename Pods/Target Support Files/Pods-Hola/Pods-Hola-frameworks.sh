@@ -52,8 +52,11 @@ code_sign_if_enabled() {
 
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
+  install_framework 'Pods-Hola/Bolts.framework'
   install_framework 'Pods-Hola/CocoaAsyncSocket.framework'
   install_framework 'Pods-Hola/CocoaLumberjack.framework'
+  install_framework 'Pods-Hola/FBSDKCoreKit.framework'
+  install_framework 'Pods-Hola/FBSDKLoginKit.framework'
   install_framework 'Pods-Hola/JSQMessagesViewController.framework'
   install_framework 'Pods-Hola/JSQSystemSoundPlayer.framework'
   install_framework 'Pods-Hola/MDMCoreData.framework'
@@ -62,8 +65,11 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework 'Pods-Hola/Mantle.framework'
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
+  install_framework 'Pods-Hola/Bolts.framework'
   install_framework 'Pods-Hola/CocoaAsyncSocket.framework'
   install_framework 'Pods-Hola/CocoaLumberjack.framework'
+  install_framework 'Pods-Hola/FBSDKCoreKit.framework'
+  install_framework 'Pods-Hola/FBSDKLoginKit.framework'
   install_framework 'Pods-Hola/JSQMessagesViewController.framework'
   install_framework 'Pods-Hola/JSQSystemSoundPlayer.framework'
   install_framework 'Pods-Hola/MDMCoreData.framework'
