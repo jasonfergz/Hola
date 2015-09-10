@@ -30,7 +30,7 @@ class ViewController: UIViewController {
         let tmp : [NSObject : AnyObject] = notification.userInfo!
         let message : MMXMessage = tmp[MMXMessageKey] as! MMXMessage
         
-        assert(message.messageContent["message"] as! String == "Hello", "Content should match")
+//        assert(message.messageContent["message"] as! String == "Hello", "Content should match")
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -50,7 +50,7 @@ class ViewController: UIViewController {
         let user = MMXUser()
         user.displayName = "Jane Doe"
         user.registerWithCredential(credential, success: { () -> Void in
-            assert(false, "Jane was already registered")
+//            assert(false, "Jane was already registered")
         }) { (error) -> Void in
             println(error)
         }
@@ -61,7 +61,7 @@ class ViewController: UIViewController {
 
             // 5. Get current user after logging in.
             let loggedInUser = MMXUser.currentUser()
-            assert(loggedInUser.displayName == "Jane Doe")
+//            assert(loggedInUser.displayName == "Jane Doe")
             
             self.performSegueWithIdentifier("showMessagesSegue", sender: self)
             
@@ -74,13 +74,13 @@ class ViewController: UIViewController {
         
         // 6. Get Users.
         MMXUser.findByDisplayName("J", limit: 20, success: { (totalCount, users) -> Void in
-            assert(users.count > 0, "Should have at least 1 user")
+//            assert(users.count > 0, "Should have at least 1 user")
             
             let janeDoe = users.first as! MMXUser
             
             let message = MMXMessage(toRecipients: Set([janeDoe]), messageContent: ["message": "Hello"])
             message.sendWithSuccess( { () -> Void in
-                assert(message.messageID != nil, "Message send failure")
+//                assert(message.messageID != nil, "Message send failure")
             }) { (error) -> Void in
                 println(error)
             }
