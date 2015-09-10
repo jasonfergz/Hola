@@ -10,9 +10,10 @@ import Foundation
 import JSQMessagesViewController
 import MMX
 
-class MessagesViewController : JSQMessagesViewController {
+class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate {
     
     var messages = [Message]()
+    var avatars = Dictionary<String, UIImage>()
     var outgoingBubbleImageView = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleLightGrayColor())
     var incomingBubbleImageView = JSQMessagesBubbleImageFactory().incomingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleBlueColor())
     
@@ -89,7 +90,52 @@ class MessagesViewController : JSQMessagesViewController {
     
     override func didPressAccessoryButton(sender: UIButton!) {
         
+        let sheet = UIActionSheet(title: "Media messages", delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil, otherButtonTitles: "Send photo", "Send location", "Send video")
         
+        sheet.showFromToolbar(inputToolbar)
+    }
+    
+    // MARK: UIActionSheetDelegate methods
+    
+    func actionSheet(actionSheet: UIActionSheet, didDismissWithButtonIndex buttonIndex: Int) {
+        if buttonIndex == actionSheet.cancelButtonIndex {
+            return;
+        }
+        
+        switch buttonIndex {
+        case 1:
+            // addPhotoMediaMessage
+            println("addPhotoMediaMessage")
+        case 2:
+            // addLocationMediaMessageCompletion
+            println("addLocationMediaMessageCompletion")
+        case 3:
+            // addVideoMediaMessage
+            println("addVideoMediaMessage")
+        default:
+            println("default")
+        }
+        
+//        switch buttonIndex {
+//        case 0:
+////            [self.demoData addPhotoMediaMessage];
+//            
+//        case 1:
+//                __weak UICollectionView *weakView = self.collectionView;
+//                
+//                [self.demoData addLocationMediaMessageCompletion:^{
+//                    [weakView reloadData];
+//                    }];
+//            }
+//            break;
+//            
+//        case 2:
+//            [self.demoData addVideoMediaMessage];
+//            break;
+//        }
+        
+        JSQSystemSoundPlayer.jsq_playMessageSentSound()
+        finishSendingMessageAnimated(true)
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
@@ -112,7 +158,26 @@ class MessagesViewController : JSQMessagesViewController {
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageAvatarImageDataSource! {
-        return nil
+        let message = messages[indexPath.item]
+        if let avatar = avatars[message.senderId()] {
+            return JSQMessagesAvatarImageFactory.avatarImageWithImage(avatar, diameter: UInt(kJSQMessagesCollectionViewAvatarSizeDefault))
+        } else {
+            let avatarURL = NSURL(string: "https://graph.facebook.com/v2.2/10153012454715971/picture?type=large")
+            let avatarDownloadTask = NSURLSession.sharedSession().downloadTaskWithURL(avatarURL!, completionHandler: { (location, _, error) -> Void in
+                dispatch_async(dispatch_get_main_queue()) {
+                    let avatarImage = UIImage(data: NSData(contentsOfURL: location)!)
+                    self.avatars[message.senderId()] = avatarImage
+                    collectionView.reloadItemsAtIndexPaths([indexPath])
+                }
+            })
+            
+            avatarDownloadTask.resume()
+        }
+        
+        let nameParts = split(message.senderDisplayName()) {$0 == " "}
+        let initials = ("".join(nameParts.map{($0 as NSString).substringToIndex(1)}) as NSString).substringToIndex(min(nameParts.count, 2)).uppercaseString
+        
+        return JSQMessagesAvatarImageFactory.avatarImageWithUserInitials(initials, backgroundColor: UIColor(white: 0.85, alpha: 1.0), textColor: UIColor(white: 0.65, alpha: 1.0), font: UIFont.systemFontOfSize(14.0), diameter: UInt(kJSQMessagesCollectionViewAvatarSizeDefault))
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForCellTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
