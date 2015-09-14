@@ -42,24 +42,15 @@ class Message : NSObject, JSQMessageData {
         case .Text:
             return nil
         case .Location:
-            let location = CLLocation(latitude: (messageContent["latitude"] as! NSString).doubleValue, longitude: (messageContent["longitude"] as! NSString).doubleValue)
+//            let location = CLLocation(latitude: (messageContent["latitude"] as! NSString).doubleValue, longitude: (messageContent["longitude"] as! NSString).doubleValue)
             let locationMediaItem = JSQLocationMediaItem()
-            locationMediaItem.setLocation(location, withCompletionHandler: self.completion)
+            locationMediaItem.appliesMediaViewMaskAsOutgoing = false
+//            locationMediaItem.setLocation(location, withCompletionHandler: self.completion)
             return locationMediaItem
         case .Photo:
-//            let photoURL = NSURL(string: messageContent["url"] as! String)
-//            let avatarDownloadTask = NSURLSession.sharedSession().downloadTaskWithURL(photoURL!, completionHandler: { (location, _, error) -> Void in
-//                dispatch_async(dispatch_get_main_queue()) {
-//                    let avatarData = NSData(contentsOfURL: location!)
-//                    if let _ = avatarData {
-//                        
-//                        let photo = JSQPhotoMediaItem(image: UIImage(data: avatarData!))
-//                        self.completion()
-//                    }
-//                }
-//            })
             let photo = JSQPhotoMediaItem(image: UIImage.imageWithColor(UIColor.redColor()))
             photo.image = nil
+            print("Resetting image")
             return photo
         case .Video:
             return nil

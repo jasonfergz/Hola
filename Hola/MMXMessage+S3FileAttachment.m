@@ -9,6 +9,7 @@
 #import "MMXMessage+S3FileAttachment.h"
 #import <AFAmazonS3Manager/AFAmazonS3Manager.h>
 #import <AFAmazonS3Manager/AFAmazonS3ResponseSerializer.h>
+#import <MMX/MMXMessage_Private.h>
 
 NSString  * const kS3_AccessKeyID = @"";
 NSString  * const kS3_Secret = @"";
@@ -28,7 +29,7 @@ NSString  * const kS3_Bucket = @"";
 	
 	[s3Manager putObjectWithFile:pathToFile destinationPath:savePath parameters:nil progress:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
 		
-		NSLog(@"%f%% Uploaded", (totalBytesWritten / (totalBytesExpectedToWrite * 1.0f) * 100));
+//		NSLog(@"%f%% Uploaded", (totalBytesWritten / (totalBytesExpectedToWrite * 1.0f) * 100));
 		
 		progress((totalBytesWritten / (totalBytesExpectedToWrite * 1.0f) * 100));
 		
@@ -40,7 +41,8 @@ NSString  * const kS3_Bucket = @"";
 		
 		NSMutableDictionary *content = self.messageContent.mutableCopy;
         content[@"url"] = response.URL.absoluteString;
-		[[MMXMessage messageToRecipients:self.recipients messageContent:content.copy] sendWithSuccess:^{
+        self.messageContent = content;
+        [self sendWithSuccess:^{
 			if (success) {
 				success(response.URL);
 			}

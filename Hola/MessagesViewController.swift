@@ -9,6 +9,7 @@
 import Foundation
 import JSQMessagesViewController
 import MMX
+import AFNetworking
 
 class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate {
     
@@ -76,6 +77,42 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
             self.messages.append(message)
             JSQSystemSoundPlayer.jsq_playMessageReceivedSound()
             self.finishReceivingMessageAnimated(true)
+            
+            if message.isMediaMessage() {
+                
+                switch message.type {
+                case .Text:
+                    //return nil
+                    print("Text")
+                case .Location:
+                    let location = CLLocation(latitude: (mmxMessage.messageContent["latitude"] as! NSString).doubleValue, longitude: (mmxMessage.messageContent["longitude"] as! NSString).doubleValue)
+                    let locationMediaItem = JSQLocationMediaItem()
+                    locationMediaItem.setLocation(location) {
+                        self.collectionView?.reloadData()
+                    }
+                    message.mediaContent = locationMediaItem
+                case .Photo:
+                    let photoURL = NSURL(string: mmxMessage.messageContent["url"] as! String)
+                    let requestOperation = AFHTTPRequestOperation(request: NSURLRequest(URL: photoURL!))
+                    let responseSerializer = AFImageResponseSerializer()
+                    // FIXME: We should set the correct Content-Type header during upload, but can't seem to figure it out.
+                    // https://github.com/AFNetworking/AFAmazonS3Manager/issues/91
+                    responseSerializer.acceptableContentTypes = ["binary/octet-stream"]
+                    requestOperation.responseSerializer = responseSerializer
+                    requestOperation.setCompletionBlockWithSuccess({ (operation, responseObject) -> Void in
+                        let photo = JSQPhotoMediaItem(image: responseObject as! UIImage)
+                        message.mediaContent = photo
+                        self.collectionView?.reloadData()
+                    }, failure: { (operation, error) -> Void in
+                        print("error = \(error)")
+                    })
+                    requestOperation.start()
+                    
+                case .Video:
+//                    return nil
+                    print("Video")
+                }
+            }
         })
     }
     
@@ -325,6 +362,10 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
         let mmxMessage = MMXMessage(toRecipients: Set([currentRecipient()]), messageContent: messageContent)
         mmxMessage.sendWithSuccess( { () -> Void in
             let message = Message(message: mmxMessage)
+            let locationMediaItem = JSQLocationMediaItem()
+            locationMediaItem.setLocation(ferryBuildingInSF) {
+            }
+            message.mediaContent = locationMediaItem
             self.messages.append(message)
             self.finishSendingMessageAnimated(true)
             }) { (error) -> Void in
@@ -350,6 +391,11 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
             //
         }, success: { (url) -> Void in
             print(url)
+            let message = Message(message: mmxMessage)
+            let photo = JSQPhotoMediaItem(image: UIImage(data: NSData(contentsOfFile: imagePath)!))
+            message.mediaContent = photo
+            self.messages.append(message)
+            self.finishSendingMessageAnimated(true)
         }) { (error) -> Void in
             print(error)
         }
