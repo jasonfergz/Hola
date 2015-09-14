@@ -11,9 +11,9 @@
 #import <AFAmazonS3Manager/AFAmazonS3ResponseSerializer.h>
 #import <MMX/MMXMessage_Private.h>
 
-NSString  * const kS3_AccessKeyID = @"AKIAJZXIWXUQ7KWS35WQ";
-NSString  * const kS3_Secret = @"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";
-NSString  * const kS3_Bucket = @"jgfbucket";
+NSString  * const kS3_AccessKeyID = @"";
+NSString  * const kS3_Secret = @"";
+NSString  * const kS3_Bucket = @"";
 
 @implementation MMXMessage (S3FileAttachment)
 
