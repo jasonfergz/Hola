@@ -92,15 +92,23 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
                     let photoURL = NSURL(string: mmxMessage.messageContent["url"] as! String)
                     DownloadManager.sharedInstance.downloadImage(photoURL, completionHandler: { (image, error) -> Void in
                         if error == nil {
-                            let photo = JSQPhotoMediaItem(image: image)
+                            let photo = JSQPhotoMediaItem(image: image!)
                             message.mediaContent = photo
                             self.collectionView?.reloadData()
                         }
                     })
                     
                 case .Video:
-//                    return nil
-                    print("Video")
+                    let videoURL = NSURL(string: mmxMessage.messageContent["url"] as! String)
+                    DownloadManager.sharedInstance.downloadVideo(videoURL, completionHandler: { (url, error) -> Void in
+                        if error == nil {
+                            let video = JSQVideoMediaItem()
+                            video.fileURL = url
+                            video.isReadyToPlay = true
+                            message.mediaContent = video
+                            self.collectionView?.reloadData()
+                        }
+                    })
                 }
             }
         })
@@ -142,7 +150,7 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
             self.addLocationMediaMessageCompletion()
         }
         let threeAction = UIAlertAction(title: "Send video", style: .Default) { (_) in
-            print("addVideoMediaMessage()")
+            self.addVideoMediaMessage()
         }
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (_) in }
         
@@ -190,7 +198,8 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
             })
         }
         
-//        let nameParts = split(message.senderDisplayName().characters){$0 == " "}.map{$0.prefix(1)}
+//        let nameParts = message.senderDisplayName().characters.split { $0 == " " }.map{$0.prefix(1)}
+//        join(nameParts)
 //        let initials = ("".join(nameParts) as NSString).substringToIndex(min(nameParts.count, 2)).uppercaseString
         
         let initials = "PS"
@@ -354,30 +363,52 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
     }
     
     func addPhotoMediaMessage() {
-        let imageName = "goldengate"
-        let imageType = "png"
-        let image = UIImage(named: imageName)
-        _ = JSQPhotoMediaItem(image: image)
-        
         JSQSystemSoundPlayer.jsq_playMessageSentSound()
         
         let messageContent = [
             "type": MessageType.Photo.rawValue,
-//            "url": photoURL
         ]
         let mmxMessage = MMXMessage(toRecipients: Set([currentRecipient()]), messageContent: messageContent)
-        let imagePath = FileManager.sharedInstance.fileInDocumentsDirectory("\(imageName).\(imageType)")
+        let imageName = "goldengate"
+        let imageType = "png"
+        let imagePath = NSBundle.mainBundle().pathForResource(imageName, ofType: imageType)
         mmxMessage.sendWithFileAttachment(imagePath, saveToS3Path: "/magnet_test/\(imageName).\(imageType)", progress: { (progress) -> Void in
             //
         }, success: { (url) -> Void in
-            print(url)
             let message = Message(message: mmxMessage)
-            let photo = JSQPhotoMediaItem(image: UIImage(data: NSData(contentsOfFile: imagePath)!))
+            let photo = JSQPhotoMediaItem(image: UIImage(data: NSData(contentsOfFile: imagePath!)!))
             message.mediaContent = photo
             self.messages.append(message)
             self.finishSendingMessageAnimated(true)
         }) { (error) -> Void in
             print(error)
+        }
+    }
+    
+    func addVideoMediaMessage() {
+        
+        JSQSystemSoundPlayer.jsq_playMessageSentSound()
+        
+        let messageContent = [
+            "type": MessageType.Video.rawValue,
+        ]
+        
+        let mmxMessage = MMXMessage(toRecipients: Set([currentRecipient()]), messageContent: messageContent)
+        let videoName = "small"
+        let videoType = "mp4"
+        let videoPath = NSBundle.mainBundle().pathForResource(videoName, ofType: videoType)
+        mmxMessage.sendWithFileAttachment(videoPath, saveToS3Path: "/magnet_test/\(videoName).\(videoType)", progress: { (progress) -> Void in
+            //
+            }, success: { (url) -> Void in
+                let message = Message(message: mmxMessage)
+                let video = JSQVideoMediaItem()
+                video.fileURL = NSBundle.mainBundle().URLForResource(videoName, withExtension: videoType)
+                video.isReadyToPlay = true
+                message.mediaContent = video
+                self.messages.append(message)
+                self.finishSendingMessageAnimated(true)
+            }) { (error) -> Void in
+                print(error)
         }
     }
 }

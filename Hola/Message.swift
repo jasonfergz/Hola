@@ -10,22 +10,6 @@ import Foundation
 import JSQMessagesViewController
 import MMX
 
-extension UIImage {
-    class func imageWithColor(color: UIColor) -> UIImage {
-        let rect = CGRectMake(0.0, 0.0, 1.0, 1.0)
-        UIGraphicsBeginImageContext(rect.size)
-        let context = UIGraphicsGetCurrentContext()
-        
-        CGContextSetFillColorWithColor(context, color.CGColor)
-        CGContextFillRect(context, rect)
-        
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        
-        return image
-    }
-}
-
 class Message : NSObject, JSQMessageData {
     
     let underlyingMessage: MMXMessage
@@ -47,11 +31,16 @@ class Message : NSObject, JSQMessageData {
 //            locationMediaItem.setLocation(location, withCompletionHandler: self.completion)
             return locationMediaItem
         case .Photo:
-            let photo = JSQPhotoMediaItem(image: UIImage.imageWithColor(UIColor.redColor()))
-            photo.image = nil
-            return photo
+            let photoMediaItem = JSQPhotoMediaItem()
+            photoMediaItem.appliesMediaViewMaskAsOutgoing = false
+            photoMediaItem.image = nil
+            return photoMediaItem
         case .Video:
-            return nil
+            let videoMediaItem = JSQVideoMediaItem()
+            videoMediaItem.appliesMediaViewMaskAsOutgoing = false
+            videoMediaItem.fileURL = nil
+            videoMediaItem.isReadyToPlay = false
+            return videoMediaItem
         }
     }()
     
