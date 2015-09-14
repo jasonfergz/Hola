@@ -29,7 +29,6 @@ extension UIImage {
 class Message : NSObject, JSQMessageData {
     
     let underlyingMessage: MMXMessage
-    let completion: JSQLocationMediaItemCompletionBlock
     
     lazy var type: MessageType = {
         return MessageType(rawValue: self.underlyingMessage.messageContent["type"] as! String)
@@ -50,16 +49,14 @@ class Message : NSObject, JSQMessageData {
         case .Photo:
             let photo = JSQPhotoMediaItem(image: UIImage.imageWithColor(UIColor.redColor()))
             photo.image = nil
-            print("Resetting image")
             return photo
         case .Video:
             return nil
         }
     }()
     
-    init(message: MMXMessage, completion: JSQLocationMediaItemCompletionBlock = {}) {
+    init(message: MMXMessage) {
         self.underlyingMessage = message
-        self.completion = completion
     }
     
     func senderId() -> String! {

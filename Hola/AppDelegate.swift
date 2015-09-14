@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let imageName = "goldengate"
         let imageType = "png"
-        let imagePath = fileInDocumentsDirectory("\(imageName).\(imageType)")
+        let imagePath = FileManager.sharedInstance.fileInDocumentsDirectory("\(imageName).\(imageType)")
         saveImage(UIImage(named: "goldengate")!, path: imagePath)
         
         return true
@@ -60,13 +60,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
     }
     
-    func documentsDirectory() -> String {
-        let documentsFolderPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] 
-        return documentsFolderPath
-    }
-
-    func fileInDocumentsDirectory(filename: String) -> String {
-        return (NSURL(string: documentsDirectory())?.URLByAppendingPathComponent(filename).absoluteString)!
-    }
 }
 

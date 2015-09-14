@@ -9,7 +9,6 @@
 import Foundation
 import JSQMessagesViewController
 import MMX
-import AFNetworking
 
 class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate {
     
@@ -71,9 +70,7 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
          *  Allow typing indicator to show
          */
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(1.0 * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), {
-            let message = Message(message: mmxMessage) {
-                self.collectionView!.reloadData()
-            }
+            let message = Message(message: mmxMessage)
             self.messages.append(message)
             JSQSystemSoundPlayer.jsq_playMessageReceivedSound()
             self.finishReceivingMessageAnimated(true)
@@ -93,20 +90,13 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
                     message.mediaContent = locationMediaItem
                 case .Photo:
                     let photoURL = NSURL(string: mmxMessage.messageContent["url"] as! String)
-                    let requestOperation = AFHTTPRequestOperation(request: NSURLRequest(URL: photoURL!))
-                    let responseSerializer = AFImageResponseSerializer()
-                    // FIXME: We should set the correct Content-Type header during upload, but can't seem to figure it out.
-                    // https://github.com/AFNetworking/AFAmazonS3Manager/issues/91
-                    responseSerializer.acceptableContentTypes = ["binary/octet-stream"]
-                    requestOperation.responseSerializer = responseSerializer
-                    requestOperation.setCompletionBlockWithSuccess({ (operation, responseObject) -> Void in
-                        let photo = JSQPhotoMediaItem(image: responseObject as! UIImage)
-                        message.mediaContent = photo
-                        self.collectionView?.reloadData()
-                    }, failure: { (operation, error) -> Void in
-                        print("error = \(error)")
+                    DownloadManager.sharedInstance.downloadImage(photoURL, completionHandler: { (image, error) -> Void in
+                        if error == nil {
+                            let photo = JSQPhotoMediaItem(image: image)
+                            message.mediaContent = photo
+                            self.collectionView?.reloadData()
+                        }
                     })
-                    requestOperation.start()
                     
                 case .Video:
 //                    return nil
@@ -143,32 +133,28 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
     
     override func didPressAccessoryButton(sender: UIButton!) {
         
-        let sheet = UIActionSheet(title: "Media messages", delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil, otherButtonTitles: "Send photo", "Send location", "Send video")
+        let alertController = UIAlertController(title: "Media messages", message: nil, preferredStyle: .Alert)
         
-        sheet.showFromToolbar(inputToolbar!)
-    }
-    
-    // MARK: UIActionSheetDelegate methods
-    
-    func actionSheet(actionSheet: UIActionSheet, didDismissWithButtonIndex buttonIndex: Int) {
-        if buttonIndex == actionSheet.cancelButtonIndex {
-            return;
+        let sendPhotoAction = UIAlertAction(title: "Send photo", style: .Default) { (_) in
+            self.addPhotoMediaMessage()
+        }
+        let twoAction = UIAlertAction(title: "Send location", style: .Default) { (_) in
+            self.addLocationMediaMessageCompletion()
+        }
+        let threeAction = UIAlertAction(title: "Send video", style: .Default) { (_) in
+            print("addVideoMediaMessage()")
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (_) in }
+        
+        alertController.addAction(sendPhotoAction)
+        alertController.addAction(twoAction)
+        alertController.addAction(threeAction)
+        alertController.addAction(cancelAction)
+        
+        self.presentViewController(alertController, animated: true) {
+            // ...
         }
         
-        switch buttonIndex {
-        case 1:
-            addPhotoMediaMessage()
-            print("addPhotoMediaMessage")
-        case 2:
-            addLocationMediaMessageCompletion {
-                self.collectionView!.reloadData()
-            }
-        case 3:
-            // addVideoMediaMessage
-            print("addVideoMediaMessage")
-        default:
-            print("default")
-        }
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
@@ -196,18 +182,12 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
             return JSQMessagesAvatarImageFactory.avatarImageWithImage(avatar, diameter: UInt(kJSQMessagesCollectionViewAvatarSizeDefault))
         } else {
             let avatarURL = NSURL(string: "https://graph.facebook.com/v2.2/10153012454715971/picture?type=large")
-            let avatarDownloadTask = NSURLSession.sharedSession().downloadTaskWithURL(avatarURL!, completionHandler: { (location, _, error) -> Void in
-                dispatch_async(dispatch_get_main_queue()) {
-                    let avatarData = NSData(contentsOfURL: location!)
-                    if let _ = avatarData {
-                        let avatarImage = UIImage(data: avatarData!)
-                        self.avatars[message.senderId()] = avatarImage
-                        collectionView.reloadItemsAtIndexPaths([indexPath])
-                    }
+            DownloadManager.sharedInstance.downloadImage(avatarURL, completionHandler: { (image, error) -> Void in
+                if error == nil {
+                    self.avatars[message.senderId()] = image
+                    collectionView.reloadItemsAtIndexPaths([indexPath])
                 }
             })
-            
-            avatarDownloadTask.resume()
         }
         
 //        let nameParts = split(message.senderDisplayName().characters){$0 == " "}.map{$0.prefix(1)}
@@ -349,7 +329,7 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
         return currentRecipient
     }
     
-    func addLocationMediaMessageCompletion(completion: JSQLocationMediaItemCompletionBlock) {
+    func addLocationMediaMessageCompletion() {
         let ferryBuildingInSF = CLLocation(latitude: 37.795313, longitude: -122.393757)
 
         JSQSystemSoundPlayer.jsq_playMessageSentSound()
@@ -386,7 +366,7 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
 //            "url": photoURL
         ]
         let mmxMessage = MMXMessage(toRecipients: Set([currentRecipient()]), messageContent: messageContent)
-        let imagePath = fileInDocumentsDirectory("\(imageName).\(imageType)")
+        let imagePath = FileManager.sharedInstance.fileInDocumentsDirectory("\(imageName).\(imageType)")
         mmxMessage.sendWithFileAttachment(imagePath, saveToS3Path: "/magnet_test/\(imageName).\(imageType)", progress: { (progress) -> Void in
             //
         }, success: { (url) -> Void in
@@ -399,14 +379,5 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
         }) { (error) -> Void in
             print(error)
         }
-    }
-    
-    func documentsDirectory() -> String {
-        let documentsFolderPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] 
-        return documentsFolderPath
-    }
-    
-    func fileInDocumentsDirectory(filename: String) -> String {
-        return (NSURL(string: documentsDirectory())?.URLByAppendingPathComponent(filename).absoluteString)!
     }
 }
