@@ -10,7 +10,23 @@ import Foundation
 import JSQMessagesViewController
 import MMX
 
-class Message : NSObject, JSQMessageData, Printable {
+extension UIImage {
+    class func imageWithColor(color: UIColor) -> UIImage {
+        let rect = CGRectMake(0.0, 0.0, 1.0, 1.0)
+        UIGraphicsBeginImageContext(rect.size)
+        let context = UIGraphicsGetCurrentContext()
+        
+        CGContextSetFillColorWithColor(context, color.CGColor)
+        CGContextFillRect(context, rect)
+        
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return image
+    }
+}
+
+class Message : NSObject, JSQMessageData {
     
     let underlyingMessage: MMXMessage
     let completion: JSQLocationMediaItemCompletionBlock
@@ -31,7 +47,20 @@ class Message : NSObject, JSQMessageData, Printable {
             locationMediaItem.setLocation(location, withCompletionHandler: self.completion)
             return locationMediaItem
         case .Photo:
-            return nil
+//            let photoURL = NSURL(string: messageContent["url"] as! String)
+//            let avatarDownloadTask = NSURLSession.sharedSession().downloadTaskWithURL(photoURL!, completionHandler: { (location, _, error) -> Void in
+//                dispatch_async(dispatch_get_main_queue()) {
+//                    let avatarData = NSData(contentsOfURL: location!)
+//                    if let _ = avatarData {
+//                        
+//                        let photo = JSQPhotoMediaItem(image: UIImage(data: avatarData!))
+//                        self.completion()
+//                    }
+//                }
+//            })
+            let photo = JSQPhotoMediaItem(image: UIImage.imageWithColor(UIColor.redColor()))
+            photo.image = nil
+            return photo
         case .Video:
             return nil
         }

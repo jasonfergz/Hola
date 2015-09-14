@@ -31,6 +31,10 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        // 8. Receive the message
+        // Indicate that you are ready to receive messages now!
+        MMX.enableIncomingMessages()
+        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "didReceiveMessage:", name: MMXDidReceiveMessageNotification, object: nil)
     }
     
@@ -67,7 +71,7 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
          */
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (Int64)(1.0 * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), {
             let message = Message(message: mmxMessage) {
-                self.collectionView.reloadData()
+                self.collectionView!.reloadData()
             }
             self.messages.append(message)
             JSQSystemSoundPlayer.jsq_playMessageReceivedSound()
@@ -96,7 +100,7 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
             self.messages.append(message)
             self.finishSendingMessageAnimated(true)
         }) { (error) -> Void in
-            println(error)
+            print(error)
         }
     }
     
@@ -104,7 +108,7 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
         
         let sheet = UIActionSheet(title: "Media messages", delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil, otherButtonTitles: "Send photo", "Send location", "Send video")
         
-        sheet.showFromToolbar(inputToolbar)
+        sheet.showFromToolbar(inputToolbar!)
     }
     
     // MARK: UIActionSheetDelegate methods
@@ -116,17 +120,17 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
         
         switch buttonIndex {
         case 1:
-            // addPhotoMediaMessage
-            println("addPhotoMediaMessage")
+            addPhotoMediaMessage()
+            print("addPhotoMediaMessage")
         case 2:
             addLocationMediaMessageCompletion {
-                self.collectionView.reloadData()
+                self.collectionView!.reloadData()
             }
         case 3:
             // addVideoMediaMessage
-            println("addVideoMediaMessage")
+            print("addVideoMediaMessage")
         default:
-            println("default")
+            print("default")
         }
     }
     
@@ -157,7 +161,7 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
             let avatarURL = NSURL(string: "https://graph.facebook.com/v2.2/10153012454715971/picture?type=large")
             let avatarDownloadTask = NSURLSession.sharedSession().downloadTaskWithURL(avatarURL!, completionHandler: { (location, _, error) -> Void in
                 dispatch_async(dispatch_get_main_queue()) {
-                    let avatarData = NSData(contentsOfURL: location)
+                    let avatarData = NSData(contentsOfURL: location!)
                     if let _ = avatarData {
                         let avatarImage = UIImage(data: avatarData!)
                         self.avatars[message.senderId()] = avatarImage
@@ -169,8 +173,10 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
             avatarDownloadTask.resume()
         }
         
-        let nameParts = split(message.senderDisplayName()) {$0 == " "}
-        let initials = ("".join(nameParts.map{($0 as NSString).substringToIndex(1)}) as NSString).substringToIndex(min(nameParts.count, 2)).uppercaseString
+//        let nameParts = split(message.senderDisplayName().characters){$0 == " "}.map{$0.prefix(1)}
+//        let initials = ("".join(nameParts) as NSString).substringToIndex(min(nameParts.count, 2)).uppercaseString
+        
+        let initials = "PS"
         
         return JSQMessagesAvatarImageFactory.avatarImageWithUserInitials(initials, backgroundColor: UIColor(white: 0.85, alpha: 1.0), textColor: UIColor(white: 0.65, alpha: 1.0), font: UIFont.systemFontOfSize(14.0), diameter: UInt(kJSQMessagesCollectionViewAvatarSizeDefault))
     }
@@ -223,14 +229,16 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
         
         if !message.isMediaMessage() {
             if message.senderId() == senderId {
-                cell.textView.textColor = UIColor.blackColor()
+                cell.textView!.textColor = UIColor.blackColor()
             } else {
-                cell.textView.textColor = UIColor.whiteColor()
+                cell.textView!.textColor = UIColor.whiteColor()
             }
             
             // FIXME: 1
-            cell.textView.linkTextAttributes = [ NSForegroundColorAttributeName : cell.textView.textColor,
-                NSUnderlineStyleAttributeName : 1 ]
+            cell.textView!.linkTextAttributes = [
+                NSForegroundColorAttributeName : cell.textView?.textColor as! AnyObject,
+                NSUnderlineStyleAttributeName : NSUnderlineStyle.StyleSingle.rawValue | NSUnderlineStyle.PatternSolid.rawValue
+            ]
         }
         
         return cell
@@ -280,19 +288,19 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, header headerView: JSQMessagesLoadEarlierHeaderView!, didTapLoadEarlierMessagesButton sender: UIButton!) {
-        println("Load earlier messages!")
+        print("Load earlier messages!")
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, didTapAvatarImageView avatarImageView: UIImageView!, atIndexPath indexPath: NSIndexPath!) {
-        println("Tapped avatar!")
+        print("Tapped avatar!")
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, didTapMessageBubbleAtIndexPath indexPath: NSIndexPath!) {
-        println("Tapped message bubble!")
+        print("Tapped message bubble!")
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, didTapCellAtIndexPath indexPath: NSIndexPath!, touchLocation: CGPoint) {
-        println("Tapped cell at \(touchLocation)")
+        print("Tapped cell at \(touchLocation)")
     }
     
     // MARK: Helper methods
@@ -320,7 +328,39 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
             self.messages.append(message)
             self.finishSendingMessageAnimated(true)
             }) { (error) -> Void in
-                println(error)
+                print(error)
         }
+    }
+    
+    func addPhotoMediaMessage() {
+        let imageName = "goldengate"
+        let imageType = "png"
+        let image = UIImage(named: imageName)
+        _ = JSQPhotoMediaItem(image: image)
+        
+        JSQSystemSoundPlayer.jsq_playMessageSentSound()
+        
+        let messageContent = [
+            "type": MessageType.Photo.rawValue,
+//            "url": photoURL
+        ]
+        let mmxMessage = MMXMessage(toRecipients: Set([currentRecipient()]), messageContent: messageContent)
+        let imagePath = fileInDocumentsDirectory("\(imageName).\(imageType)")
+        mmxMessage.sendWithFileAttachment(imagePath, saveToS3Path: "/magnet_test/\(imageName).\(imageType)", progress: { (progress) -> Void in
+            //
+        }, success: { (url) -> Void in
+            print(url)
+        }) { (error) -> Void in
+            print(error)
+        }
+    }
+    
+    func documentsDirectory() -> String {
+        let documentsFolderPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] 
+        return documentsFolderPath
+    }
+    
+    func fileInDocumentsDirectory(filename: String) -> String {
+        return (NSURL(string: documentsDirectory())?.URLByAppendingPathComponent(filename).absoluteString)!
     }
 }

@@ -21,6 +21,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // 2. Initialize Magnet Message SDK
         MMX.setupWithConfiguration("default");
         
+        let imageName = "goldengate"
+        let imageType = "png"
+        let imagePath = fileInDocumentsDirectory("\(imageName).\(imageType)")
+        saveImage(UIImage(named: "goldengate")!, path: imagePath)
+        
         return true
     }
 
@@ -45,7 +50,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
+    
+    func saveImage (image: UIImage, path: String ) -> Bool{
+        
+        let pngImageData = UIImagePNGRepresentation(image)
+        let result = pngImageData!.writeToFile(path, atomically: true)
+        
+        return result
+        
+    }
+    
+    func documentsDirectory() -> String {
+        let documentsFolderPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] 
+        return documentsFolderPath
+    }
 
-
+    func fileInDocumentsDirectory(filename: String) -> String {
+        return (NSURL(string: documentsDirectory())?.URLByAppendingPathComponent(filename).absoluteString)!
+    }
 }
 

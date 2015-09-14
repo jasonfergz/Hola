@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum MessageType: String, Printable {
+enum MessageType: String, CustomStringConvertible {
     case Text = "text"
     case Location = "location"
     case Photo = "photo"

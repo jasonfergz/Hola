@@ -4,3 +4,4 @@
 
 #import <MMX/MMX.h>
 #import <JSQMessagesViewController/JSQMessages.h>
+#import "MMXMessage+S3FileAttachment.h"

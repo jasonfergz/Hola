@@ -17,6 +17,7 @@
 		215219D81B9FB63C00F5B3A3 /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 215219D71B9FB63C00F5B3A3 /* MessagesViewController.swift */; };
 		21547F661BA0A89E00C353E9 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21547F651BA0A89E00C353E9 /* Message.swift */; };
 		21547F681BA2010800C353E9 /* MessageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21547F671BA2010800C353E9 /* MessageType.swift */; };
+		21547F6B1BA2316900C353E9 /* MMXMessage+S3FileAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 21547F6A1BA2316900C353E9 /* MMXMessage+S3FileAttachment.m */; };
 		4675465921226237025A1A7C /* Pods_Hola.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5872CF73FFBB4ACC65DD63BC /* Pods_Hola.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
@@ -47,6 +48,8 @@
 		215219D71B9FB63C00F5B3A3 /* MessagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesViewController.swift; sourceTree = "<group>"; };
 		21547F651BA0A89E00C353E9 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		21547F671BA2010800C353E9 /* MessageType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageType.swift; sourceTree = "<group>"; };
+		21547F691BA2316900C353E9 /* MMXMessage+S3FileAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MMXMessage+S3FileAttachment.h"; sourceTree = "<group>"; };
+		21547F6A1BA2316900C353E9 /* MMXMessage+S3FileAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MMXMessage+S3FileAttachment.m"; sourceTree = "<group>"; };
 		3743644F6CE315CCF1424614 /* Pods-Hola.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hola.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Hola/Pods-Hola.debug.xcconfig"; sourceTree = "<group>"; };
 		5872CF73FFBB4ACC65DD63BC /* Pods_Hola.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Hola.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -101,6 +104,8 @@
 		215219AE1B9F696500F5B3A3 /* Hola */ = {
 			isa = PBXGroup;
 			children = (
+				21547F691BA2316900C353E9 /* MMXMessage+S3FileAttachment.h */,
+				21547F6A1BA2316900C353E9 /* MMXMessage+S3FileAttachment.m */,
 				215219B11B9F696500F5B3A3 /* AppDelegate.swift */,
 				215219B31B9F696500F5B3A3 /* ViewController.swift */,
 				215219B51B9F696500F5B3A3 /* Main.storyboard */,
@@ -197,7 +202,9 @@
 		215219A41B9F696500F5B3A3 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0640;
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Magnet Systems, Inc.";
 				TargetAttributes = {
 					215219AB1B9F696500F5B3A3 = {
@@ -303,6 +310,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				215219B41B9F696500F5B3A3 /* ViewController.swift in Sources */,
+				21547F6B1BA2316900C353E9 /* MMXMessage+S3FileAttachment.m in Sources */,
 				21547F661BA0A89E00C353E9 /* Message.swift in Sources */,
 				21547F681BA2010800C353E9 /* MessageType.swift in Sources */,
 				215219D81B9FB63C00F5B3A3 /* MessagesViewController.swift in Sources */,
@@ -369,6 +377,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -437,6 +446,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = Hola/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.magnet.iOS.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Hola/Hola-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -451,6 +461,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = Hola/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.magnet.iOS.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Hola/Hola-Bridging-Header.h";
 			};
@@ -470,6 +481,7 @@
 				);
 				INFOPLIST_FILE = HolaTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.magnet.iOS.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Hola.app/Hola";
 			};
@@ -485,6 +497,7 @@
 				);
 				INFOPLIST_FILE = HolaTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.magnet.iOS.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Hola.app/Hola";
 			};
