@@ -198,11 +198,8 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
             })
         }
         
-//        let nameParts = message.senderDisplayName().characters.split { $0 == " " }.map{$0.prefix(1)}
-//        join(nameParts)
-//        let initials = ("".join(nameParts) as NSString).substringToIndex(min(nameParts.count, 2)).uppercaseString
-        
-        let initials = "PS"
+        let nameParts = message.senderDisplayName().componentsSeparatedByString(" ")
+        let initials = (nameParts.map{($0 as NSString).substringToIndex(1)}.joinWithSeparator("") as NSString).substringToIndex(min(nameParts.count, 2)).uppercaseString
         
         return JSQMessagesAvatarImageFactory.avatarImageWithUserInitials(initials, backgroundColor: UIColor(white: 0.85, alpha: 1.0), textColor: UIColor(white: 0.65, alpha: 1.0), font: UIFont.systemFontOfSize(14.0), diameter: UInt(kJSQMessagesCollectionViewAvatarSizeDefault))
     }
