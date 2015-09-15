@@ -62,21 +62,17 @@ class ViewController: UIViewController, FBSDKLoginButtonDelegate {
         user.registerWithCredential(credential, success: { () -> Void in
 //            assert(false, "Jane was already registered")
         }) { (error) -> Void in
-            println(error)
+            print(error)
         }
 
         
         // 4. Login using your username (the one you just created)
         MMXUser.logInWithCredential(credential, success: { (user) -> Void in
 
-            // 5. Get current user after logging in.
-            let loggedInUser = MMXUser.currentUser()
-//            assert(loggedInUser.displayName == "Jane Doe")
-            
             self.performSegueWithIdentifier("showMessagesSegue", sender: self)
             
         }) { (error) -> Void in
-            println(error)
+            print(error)
         }
     }
 
@@ -92,11 +88,11 @@ class ViewController: UIViewController, FBSDKLoginButtonDelegate {
             message.sendWithSuccess( { () -> Void in
 //                assert(message.messageID != nil, "Message send failure")
             }) { (error) -> Void in
-                println(error)
+                print(error)
             }
             
         }) { (error) -> Void in
-                println(error)
+                print(error)
         }
     }
 
@@ -117,7 +113,7 @@ class ViewController: UIViewController, FBSDKLoginButtonDelegate {
 	}
 
 	func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
-		println("\n\nloginButton didCompleteWithResult token \(result.token.tokenString) \n userID  \(result.token.userID) \ngrantedPermissions = \(result.grantedPermissions) \nerror \(error)")
+		print("\n\nloginButton didCompleteWithResult token \(result.token.tokenString) \n userID  \(result.token.userID) \ngrantedPermissions = \(result.grantedPermissions) \nerror \(error)")
 		fetchUserFacebookDataAndLogin()
 	}
 	
@@ -130,7 +126,7 @@ class ViewController: UIViewController, FBSDKLoginButtonDelegate {
 				let userID: AnyObject? = requestResult.valueForKey("id")
 				
 				self.registerAndLoginToMMX(name as! String, email: email as! String, userID: userID as! String)
-				println("\n\ngraphRequest startWithCompletionHandler: \nname \(name) \n email  \(email) \nuserID = \(userID) \nerror \(requestError)\n\nAll Values \(requestResult.allValues)")
+				print("\n\ngraphRequest startWithCompletionHandler: \nname \(name) \n email  \(email) \nuserID = \(userID) \nerror \(requestError)\n\nAll Values \(requestResult.allValues)")
 			})
 		}
 	}
@@ -142,21 +138,21 @@ class ViewController: UIViewController, FBSDKLoginButtonDelegate {
 		let credential = NSURLCredential(user: user.username, password: userID, persistence: .None)
 		user.registerWithCredential(credential, success: { () -> Void in
 			MMXUser.logInWithCredential(credential, success: { (user) -> Void in
-				println("\n\nlogInWithCredential success!!!\n\n")
+				print("\n\nlogInWithCredential success!!!\n\n")
 				self.performSegueWithIdentifier("showMessagesSegue", sender: self)
 				}, failure: { (error) -> Void in
-					println("logInWithCredential error = \(error)")
+					print("logInWithCredential error = \(error)")
 			})
 			}) { (error) -> Void in
 				if error.code == 409 {
 					MMXUser.logInWithCredential(credential, success: { (user) -> Void in
-						println("\n\nlogInWithCredential success!!!\n\n")
+						print("\n\nlogInWithCredential success!!!\n\n")
 						self.performSegueWithIdentifier("showMessagesSegue", sender: self)
 						}, failure: { (error) -> Void in
-							println("logInWithCredential error = \(error)")
+							print("logInWithCredential error = \(error)")
 					})
 				} else {
-					println("logInWithCredential error = \(error)")
+					print("logInWithCredential error = \(error)")
 				}
 		}
 	}
@@ -166,7 +162,7 @@ class ViewController: UIViewController, FBSDKLoginButtonDelegate {
 	}
 	
 	func onProfileUpdated(notification: NSNotification) {
-		println("\n\nonProfileUpdated notification \(FBSDKProfile.currentProfile())\n")
+		print("\n\nonProfileUpdated notification \(FBSDKProfile.currentProfile())\n")
 	}
 
 }

@@ -10,6 +10,8 @@ pod 'MMX'
 pod 'JSQMessagesViewController', :git => 'https://github.com/jessesquires/JSQMessagesViewController.git', :branch => 'develop'
 pod 'FBSDKLoginKit'
 
+pod 'AFAmazonS3Manager', '~> 3.2'
+
 end
 
 target 'HolaTests' do

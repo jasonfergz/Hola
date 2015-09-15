@@ -6,3 +6,4 @@
 #import <JSQMessagesViewController/JSQMessages.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
+#import "MMXMessage+S3FileAttachment.h"

@@ -52,6 +52,8 @@ code_sign_if_enabled() {
 
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
+  install_framework 'Pods-Hola/AFAmazonS3Manager.framework'
+  install_framework 'Pods-Hola/AFNetworking.framework'
   install_framework 'Pods-Hola/Bolts.framework'
   install_framework 'Pods-Hola/CocoaAsyncSocket.framework'
   install_framework 'Pods-Hola/CocoaLumberjack.framework'
@@ -65,6 +67,8 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework 'Pods-Hola/Mantle.framework'
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
+  install_framework 'Pods-Hola/AFAmazonS3Manager.framework'
+  install_framework 'Pods-Hola/AFNetworking.framework'
   install_framework 'Pods-Hola/Bolts.framework'
   install_framework 'Pods-Hola/CocoaAsyncSocket.framework'
   install_framework 'Pods-Hola/CocoaLumberjack.framework'

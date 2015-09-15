@@ -10,10 +10,9 @@ import Foundation
 import JSQMessagesViewController
 import MMX
 
-class Message : NSObject, JSQMessageData, Printable {
+class Message : NSObject, JSQMessageData {
     
     let underlyingMessage: MMXMessage
-    let completion: JSQLocationMediaItemCompletionBlock
     
     lazy var type: MessageType = {
         return MessageType(rawValue: self.underlyingMessage.messageContent["type"] as! String)
@@ -26,20 +25,27 @@ class Message : NSObject, JSQMessageData, Printable {
         case .Text:
             return nil
         case .Location:
-            let location = CLLocation(latitude: (messageContent["latitude"] as! NSString).doubleValue, longitude: (messageContent["longitude"] as! NSString).doubleValue)
+//            let location = CLLocation(latitude: (messageContent["latitude"] as! NSString).doubleValue, longitude: (messageContent["longitude"] as! NSString).doubleValue)
             let locationMediaItem = JSQLocationMediaItem()
-            locationMediaItem.setLocation(location, withCompletionHandler: self.completion)
+            locationMediaItem.appliesMediaViewMaskAsOutgoing = false
+//            locationMediaItem.setLocation(location, withCompletionHandler: self.completion)
             return locationMediaItem
         case .Photo:
-            return nil
+            let photoMediaItem = JSQPhotoMediaItem()
+            photoMediaItem.appliesMediaViewMaskAsOutgoing = false
+            photoMediaItem.image = nil
+            return photoMediaItem
         case .Video:
-            return nil
+            let videoMediaItem = JSQVideoMediaItem()
+            videoMediaItem.appliesMediaViewMaskAsOutgoing = false
+            videoMediaItem.fileURL = nil
+            videoMediaItem.isReadyToPlay = false
+            return videoMediaItem
         }
     }()
     
-    init(message: MMXMessage, completion: JSQLocationMediaItemCompletionBlock = {}) {
+    init(message: MMXMessage) {
         self.underlyingMessage = message
-        self.completion = completion
     }
     
     func senderId() -> String! {

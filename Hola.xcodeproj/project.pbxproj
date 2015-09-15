@@ -17,6 +17,10 @@
 		215219D81B9FB63C00F5B3A3 /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 215219D71B9FB63C00F5B3A3 /* MessagesViewController.swift */; };
 		21547F661BA0A89E00C353E9 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21547F651BA0A89E00C353E9 /* Message.swift */; };
 		21547F681BA2010800C353E9 /* MessageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21547F671BA2010800C353E9 /* MessageType.swift */; };
+		21547F6B1BA2316900C353E9 /* MMXMessage+S3FileAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 21547F6A1BA2316900C353E9 /* MMXMessage+S3FileAttachment.m */; };
+		216394401BA755760011479D /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2163943F1BA755760011479D /* DownloadManager.swift */; settings = {ASSET_TAGS = (); }; };
+		216394C21BA786530011479D /* small.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 216394C11BA786530011479D /* small.mp4 */; settings = {ASSET_TAGS = (); }; };
+		216394C61BA78F080011479D /* goldengate.png in Resources */ = {isa = PBXBuildFile; fileRef = 216394C51BA78F080011479D /* goldengate.png */; settings = {ASSET_TAGS = (); }; };
 		4675465921226237025A1A7C /* Pods_Hola.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5872CF73FFBB4ACC65DD63BC /* Pods_Hola.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
@@ -47,6 +51,11 @@
 		215219D71B9FB63C00F5B3A3 /* MessagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesViewController.swift; sourceTree = "<group>"; };
 		21547F651BA0A89E00C353E9 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		21547F671BA2010800C353E9 /* MessageType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageType.swift; sourceTree = "<group>"; };
+		21547F691BA2316900C353E9 /* MMXMessage+S3FileAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MMXMessage+S3FileAttachment.h"; sourceTree = "<group>"; };
+		21547F6A1BA2316900C353E9 /* MMXMessage+S3FileAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MMXMessage+S3FileAttachment.m"; sourceTree = "<group>"; };
+		2163943F1BA755760011479D /* DownloadManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
+		216394C11BA786530011479D /* small.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = small.mp4; sourceTree = "<group>"; };
+		216394C51BA78F080011479D /* goldengate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = goldengate.png; sourceTree = "<group>"; };
 		3743644F6CE315CCF1424614 /* Pods-Hola.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hola.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Hola/Pods-Hola.debug.xcconfig"; sourceTree = "<group>"; };
 		5872CF73FFBB4ACC65DD63BC /* Pods_Hola.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Hola.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -101,6 +110,8 @@
 		215219AE1B9F696500F5B3A3 /* Hola */ = {
 			isa = PBXGroup;
 			children = (
+				21547F691BA2316900C353E9 /* MMXMessage+S3FileAttachment.h */,
+				21547F6A1BA2316900C353E9 /* MMXMessage+S3FileAttachment.m */,
 				215219B11B9F696500F5B3A3 /* AppDelegate.swift */,
 				215219B31B9F696500F5B3A3 /* ViewController.swift */,
 				215219B51B9F696500F5B3A3 /* Main.storyboard */,
@@ -111,6 +122,7 @@
 				215219D71B9FB63C00F5B3A3 /* MessagesViewController.swift */,
 				21547F651BA0A89E00C353E9 /* Message.swift */,
 				21547F671BA2010800C353E9 /* MessageType.swift */,
+				2163943F1BA755760011479D /* DownloadManager.swift */,
 			);
 			path = Hola;
 			sourceTree = "<group>";
@@ -118,6 +130,8 @@
 		215219AF1B9F696500F5B3A3 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				216394C51BA78F080011479D /* goldengate.png */,
+				216394C11BA786530011479D /* small.mp4 */,
 				215219D51B9F816B00F5B3A3 /* Configurations.plist */,
 				215219B01B9F696500F5B3A3 /* Info.plist */,
 			);
@@ -197,7 +211,9 @@
 		215219A41B9F696500F5B3A3 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0640;
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Magnet Systems, Inc.";
 				TargetAttributes = {
 					215219AB1B9F696500F5B3A3 = {
@@ -234,6 +250,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				215219B71B9F696500F5B3A3 /* Main.storyboard in Resources */,
+				216394C61BA78F080011479D /* goldengate.png in Resources */,
+				216394C21BA786530011479D /* small.mp4 in Resources */,
 				215219D61B9F816B00F5B3A3 /* Configurations.plist in Resources */,
 				215219BC1B9F696500F5B3A3 /* LaunchScreen.xib in Resources */,
 				215219B91B9F696500F5B3A3 /* Images.xcassets in Resources */,
@@ -303,10 +321,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				215219B41B9F696500F5B3A3 /* ViewController.swift in Sources */,
+				21547F6B1BA2316900C353E9 /* MMXMessage+S3FileAttachment.m in Sources */,
 				21547F661BA0A89E00C353E9 /* Message.swift in Sources */,
 				21547F681BA2010800C353E9 /* MessageType.swift in Sources */,
 				215219D81B9FB63C00F5B3A3 /* MessagesViewController.swift in Sources */,
 				215219B21B9F696500F5B3A3 /* AppDelegate.swift in Sources */,
+				216394401BA755760011479D /* DownloadManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -369,6 +389,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -437,6 +458,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = Hola/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.magnet.iOS.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Hola/Hola-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -451,6 +473,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = Hola/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.magnet.iOS.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Hola/Hola-Bridging-Header.h";
 			};
@@ -460,16 +483,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = HolaTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.magnet.iOS.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Hola.app/Hola";
 			};
@@ -479,12 +500,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = HolaTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.magnet.iOS.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Hola.app/Hola";
 			};
