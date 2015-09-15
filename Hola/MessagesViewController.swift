@@ -12,7 +12,8 @@ import MMX
 
 class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate {
     
-    var messages = [JSQMessageData]()
+	var messages = [JSQMessageData]()
+	var recipients = Set<MMXUser>()
     var avatars = Dictionary<String, UIImage>()
     var outgoingBubbleImageView = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleLightGrayColor())
     var incomingBubbleImageView = JSQMessagesBubbleImageFactory().incomingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleBlueColor())
@@ -25,12 +26,16 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
         
         showLoadEarlierMessagesHeader = true
         
-//        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage.jsq_defaultTypingIndicatorImage(), style: .Bordered, target: self, action: "receiveMessagePressed:")
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
+		if recipients.count == 1 {
+			let user = recipients.popFirst()
+			navigationItem.title = user?.displayName
+		} else {
+			navigationItem.title = "Group"
+		}
         // 8. Receive the message
         // Indicate that you are ready to receive messages now!
         MMX.enableIncomingMessages()
@@ -129,7 +134,7 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
             "type": MessageType.Text.rawValue,
             "message": text,
         ]
-        let mmxMessage = MMXMessage(toRecipients: Set([currentRecipient()]), messageContent: messageContent)
+        let mmxMessage = MMXMessage(toRecipients: recipients, messageContent: messageContent)
         mmxMessage.sendWithSuccess( { () -> Void in
             let message = Message(message: mmxMessage)
             self.messages.append(message)
@@ -189,7 +194,7 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
         if let avatar = avatars[message.senderId()] {
             return JSQMessagesAvatarImageFactory.avatarImageWithImage(avatar, diameter: UInt(kJSQMessagesCollectionViewAvatarSizeDefault))
         } else {
-            let avatarURL = NSURL(string: "https://graph.facebook.com/v2.2/10153012454715971/picture?type=large")
+            let avatarURL = NSURL(string: "https://graph.facebook.com/v2.2/\(message.senderId())/picture?type=large")
             DownloadManager.sharedInstance.downloadImage(avatarURL, completionHandler: { (image, error) -> Void in
                 if error == nil {
                     self.avatars[message.senderId()] = image
@@ -345,7 +350,7 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
             "latitude": "\(ferryBuildingInSF.coordinate.latitude)",
             "longitude": "\(ferryBuildingInSF.coordinate.longitude)"
         ]
-        let mmxMessage = MMXMessage(toRecipients: Set([currentRecipient()]), messageContent: messageContent)
+        let mmxMessage = MMXMessage(toRecipients: recipients, messageContent: messageContent)
         mmxMessage.sendWithSuccess( { () -> Void in
             let message = Message(message: mmxMessage)
             let locationMediaItem = JSQLocationMediaItem()
@@ -365,11 +370,11 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
         let messageContent = [
             "type": MessageType.Photo.rawValue,
         ]
-        let mmxMessage = MMXMessage(toRecipients: Set([currentRecipient()]), messageContent: messageContent)
+        let mmxMessage = MMXMessage(toRecipients: recipients, messageContent: messageContent)
         let imageName = "goldengate"
         let imageType = "png"
         let imagePath = NSBundle.mainBundle().pathForResource(imageName, ofType: imageType)
-        mmxMessage.sendWithFileAttachment(imagePath, saveToS3Path: "/magnet_test/\(imageName).\(imageType)", progress: { (progress) -> Void in
+        mmxMessage.sendWithFileAttachment(imagePath, saveToS3Path: "/magnet_test/\(MMXUser.currentUser().username)/\(imageName).\(imageType)", progress: { (progress) -> Void in
             //
         }, success: { (url) -> Void in
             let message = Message(message: mmxMessage)
@@ -390,11 +395,11 @@ class MessagesViewController : JSQMessagesViewController, UIActionSheetDelegate 
             "type": MessageType.Video.rawValue,
         ]
         
-        let mmxMessage = MMXMessage(toRecipients: Set([currentRecipient()]), messageContent: messageContent)
+        let mmxMessage = MMXMessage(toRecipients: recipients, messageContent: messageContent)
         let videoName = "small"
         let videoType = "mp4"
         let videoPath = NSBundle.mainBundle().pathForResource(videoName, ofType: videoType)
-        mmxMessage.sendWithFileAttachment(videoPath, saveToS3Path: "/magnet_test/\(videoName).\(videoType)", progress: { (progress) -> Void in
+        mmxMessage.sendWithFileAttachment(videoPath, saveToS3Path: "/magnet_test/\(MMXUser.currentUser().username)/\(videoName).\(videoType)", progress: { (progress) -> Void in
             //
             }, success: { (url) -> Void in
                 let message = Message(message: mmxMessage)

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="3jg-2H-Uez">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="3jg-2H-Uez">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -15,42 +16,16 @@
                     <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cTl-hg-qHP">
-                                <rect key="frame" x="281" y="285" width="38" height="30"/>
-                                <state key="normal" title="Login">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="login:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="BiS-6c-NEt"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vzt-eX-k2a">
-                                <rect key="frame" x="249" y="328" width="102" height="30"/>
-                                <state key="normal" title="Send Message">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="sendMessage:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="Q8X-ua-ElF"/>
-                                </connections>
-                            </button>
-                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstAttribute="centerX" secondItem="cTl-hg-qHP" secondAttribute="centerX" id="KWQ-WS-U7C"/>
-                            <constraint firstItem="Vzt-eX-k2a" firstAttribute="top" secondItem="cTl-hg-qHP" secondAttribute="bottom" constant="13" id="Uti-Ek-Y1W"/>
-                            <constraint firstAttribute="centerY" secondItem="cTl-hg-qHP" secondAttribute="centerY" id="tGr-wh-UDq"/>
-                            <constraint firstItem="Vzt-eX-k2a" firstAttribute="centerX" secondItem="cTl-hg-qHP" secondAttribute="centerX" id="vt8-kC-T9s"/>
-                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="prd-KD-6ue"/>
                     <connections>
-                        <segue destination="3h3-Zg-GBb" kind="show" identifier="showMessagesSegue" id="7Uk-2Q-RWE"/>
+                        <segue destination="P3Z-wi-dps" kind="show" identifier="showRecipientsSegue" id="Iee-sQ-SZk"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2519" y="1111"/>
+            <point key="canvasLocation" x="2464" y="1111"/>
         </scene>
         <!--Messages View Controller-->
         <scene sceneID="KoQ-ov-UjG">
@@ -69,7 +44,38 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KXt-Bo-gTD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1796" y="362"/>
+            <point key="canvasLocation" x="2519" y="378"/>
+        </scene>
+        <!--Recipient List Table View Controller-->
+        <scene sceneID="fbn-JS-pWZ">
+            <objects>
+                <tableViewController storyboardIdentifier="RecipientListTableViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="P3Z-wi-dps" customClass="RecipientListTableViewController" customModule="Hola" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="hrb-8D-X3C">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="reuseIdentifier" id="dpq-gu-qdT">
+                                <rect key="frame" x="0.0" y="92" width="600" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="dpq-gu-qdT" id="Oqm-VK-wqH">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="P3Z-wi-dps" id="TeS-3o-9PO"/>
+                            <outlet property="delegate" destination="P3Z-wi-dps" id="Jma-iO-sn7"/>
+                        </connections>
+                    </tableView>
+                    <connections>
+                        <segue destination="3h3-Zg-GBb" kind="show" identifier="showMessagesSegue" id="PK3-Ni-z0v"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Agk-8G-8Ub" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1727" y="395"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="ri4-Sy-iYZ">
